@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'json'
+require_relative 'domain/response'
 
 get '/' do
   "Hello world, it's #{Time.now} at the server!"
@@ -18,14 +18,13 @@ get '/application_properties/:env/:version' do
   
   # Testing and development
   if params[:env] == 'dev' || params[:env] == 'test'
-    r = Responses::Response.new("1", "2", false)
-    r.to_json()
+    Response.new("1", "2", false).json
   # Production
-  else params[:env] == 'prod'
-    r = Responses::Response.new("1", "2", true)
-    r.to_json()
+  elsif params[:env] == 'prod'
+    Response.new("1", "2", true).json
+  else
+    # Error
+    Response.error().json
   end
   
-  # Error
-  Responses::Response.error()
 end
